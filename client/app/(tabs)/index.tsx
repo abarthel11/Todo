@@ -1,7 +1,8 @@
-import { StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Text, View } from '@/components/Themed';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface Todo {
   id: string;
@@ -12,6 +13,32 @@ interface Todo {
 export default function TodoScreen() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputText, setInputText] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const fetchTodos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(API_ENDPOINTS.TODOS);
+      const data = await response.json();
+      
+      if (data.success) {
+        setTodos(data.data);
+      } else {
+        setError('Failed to fetch todos');
+      }
+    } catch (err) {
+      setError('Unable to connect to server');
+      console.error('Error fetching todos:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addTodo = () => {
     if (inputText.trim()) {
@@ -62,13 +89,28 @@ export default function TodoScreen() {
         <Text style={styles.subtitle}>{todos.filter(t => !t.completed).length} active</Text>
       </View>
       
-      <FlatList
-        data={todos}
-        renderItem={renderTodo}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-      />
+      {loading ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#3b82f6" />
+          <Text style={styles.loadingText}>Loading todos...</Text>
+        </View>
+      ) : error ? (
+        <View style={styles.centerContainer}>
+          <Ionicons name="cloud-offline-outline" size={48} color="#ef4444" />
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchTodos}>
+            <Text style={styles.retryText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <FlatList
+          data={todos}
+          renderItem={renderTodo}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
       
       <View style={styles.inputContainer}>
         <TextInput
@@ -174,5 +216,34 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 4,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#6b7280',
+    marginTop: 10,
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#ef4444',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  retryButton: {
+    marginTop: 16,
+    backgroundColor: '#3b82f6',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
