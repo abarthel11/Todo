@@ -1,7 +1,9 @@
-import { TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator, View, Text } from 'react-native';
+import { TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, View, Text } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { API_ENDPOINTS } from '@/config/api';
+import DraggableFlatList, { ScaleDecorator, RenderItemParams } from 'react-native-draggable-flatlist';
+import * as Haptics from 'expo-haptics';
 
 interface Todo {
   id: string;
@@ -60,25 +62,52 @@ export default function TodoScreen() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  const renderTodo = ({ item }: { item: Todo }) => (
-    <View className="flex-row items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-xl mb-2 shadow-sm">
-      <TouchableOpacity onPress={() => toggleTodo(item.id)} className="flex-row items-center flex-1">
-        <Ionicons 
-          name={item.completed ? "checkbox" : "square-outline"} 
-          size={24} 
-          color={item.completed ? "#10b981" : "#6b7280"} 
-        />
-        <Text className={`text-base ml-3 flex-1 text-gray-700 dark:text-gray-100 ${
-          item.completed ? 'line-through text-gray-400 dark:text-gray-500' : ''
-        }`}>
-          {item.text}
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => deleteTodo(item.id)} className="pl-3">
-        <Ionicons name="trash-outline" size={22} color="#ef4444" />
-      </TouchableOpacity>
-    </View>
-  );
+  const renderTodo = ({ item, drag, isActive }: RenderItemParams<Todo>) => {
+    const handleDrag = () => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      drag();
+    };
+
+    return (
+      <ScaleDecorator>
+        <View
+          className={`flex-row items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-xl mb-2 shadow-sm ${
+            isActive ? 'opacity-80 scale-105' : ''
+          }`}
+        >
+          <TouchableOpacity 
+            onPress={() => toggleTodo(item.id)} 
+            onLongPress={handleDrag}
+            disabled={isActive}
+            className="flex-row items-center flex-1"
+          >
+            <Ionicons 
+              name={item.completed ? "checkbox" : "square-outline"} 
+              size={24} 
+              color={item.completed ? "#10b981" : "#6b7280"} 
+            />
+            <Text className={`text-base ml-3 flex-1 text-gray-700 dark:text-gray-100 ${
+              item.completed ? 'line-through text-gray-400 dark:text-gray-500' : ''
+            }`}>
+              {item.text}
+            </Text>
+          </TouchableOpacity>
+          <View className="flex-row items-center">
+            <TouchableOpacity onPress={() => deleteTodo(item.id)} className="pl-3">
+              <Ionicons name="trash-outline" size={22} color="#ef4444" />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={handleDrag}
+              disabled={isActive}
+              className="pl-3 py-1"
+            >
+              <Ionicons name="reorder-three" size={24} color="#9ca3af" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScaleDecorator>
+    );
+  };
 
   return (
     <KeyboardAvoidingView 
@@ -87,7 +116,12 @@ export default function TodoScreen() {
     >
       <View className="px-5 pt-16 pb-5">
         <Text className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Tasks</Text>
-        <Text className="text-base mt-1 text-gray-500 dark:text-gray-400">{todos.filter(t => !t.completed).length} active</Text>
+        <View className="flex-row items-center justify-between mt-1">
+          <Text className="text-base text-gray-500 dark:text-gray-400">{todos.filter(t => !t.completed).length} active</Text>
+          {todos.length > 0 && (
+            <Text className="text-sm text-gray-400 dark:text-gray-500">Tap ≡ or long press to reorder</Text>
+          )}
+        </View>
       </View>
       
       {loading ? (
@@ -104,10 +138,11 @@ export default function TodoScreen() {
           </TouchableOpacity>
         </View>
       ) : (
-        <FlatList
+        <DraggableFlatList
           data={todos}
           renderItem={renderTodo}
           keyExtractor={item => item.id}
+          onDragEnd={({ data }) => setTodos(data)}
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 96 }}
           showsVerticalScrollIndicator={false}
         />

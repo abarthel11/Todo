@@ -14,6 +14,7 @@ import "../global.css";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,9 +55,11 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <ThemeProvider>
-      <RootLayoutNavContent />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <RootLayoutNavContent />
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
 
