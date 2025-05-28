@@ -1,7 +1,6 @@
-import { StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator, View, Text } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Text, View } from '@/components/Themed';
 import { API_ENDPOINTS } from '@/config/api';
 
 interface Todo {
@@ -62,18 +61,18 @@ export default function TodoScreen() {
   };
 
   const renderTodo = ({ item }: { item: Todo }) => (
-    <View style={styles.todoItem}>
-      <TouchableOpacity onPress={() => toggleTodo(item.id)} style={styles.todoContent}>
+    <View className="flex-row items-center justify-between bg-white p-4 rounded-xl mb-2 shadow-sm">
+      <TouchableOpacity onPress={() => toggleTodo(item.id)} className="flex-row items-center flex-1">
         <Ionicons 
           name={item.completed ? "checkbox" : "square-outline"} 
           size={24} 
           color={item.completed ? "#10b981" : "#6b7280"} 
         />
-        <Text style={[styles.todoText, item.completed && styles.completedText]}>
+        <Text className={`text-base ml-3 flex-1 ${item.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
           {item.text}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => deleteTodo(item.id)}>
+      <TouchableOpacity onPress={() => deleteTodo(item.id)} className="pl-3">
         <Ionicons name="trash-outline" size={22} color="#ef4444" />
       </TouchableOpacity>
     </View>
@@ -81,25 +80,25 @@ export default function TodoScreen() {
 
   return (
     <KeyboardAvoidingView 
-      style={styles.container}
+      className="flex-1 bg-gray-50"
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.header}>
-        <Text style={styles.title}>My Tasks</Text>
-        <Text style={styles.subtitle}>{todos.filter(t => !t.completed).length} active</Text>
+      <View className="px-5 pt-16 pb-5">
+        <Text className="text-3xl font-bold text-gray-900">My Tasks</Text>
+        <Text className="text-base text-gray-500 mt-1">{todos.filter(t => !t.completed).length} active</Text>
       </View>
       
       {loading ? (
-        <View style={styles.centerContainer}>
+        <View className="flex-1 justify-center items-center px-10">
           <ActivityIndicator size="large" color="#3b82f6" />
-          <Text style={styles.loadingText}>Loading todos...</Text>
+          <Text className="text-base text-gray-500 mt-3">Loading todos...</Text>
         </View>
       ) : error ? (
-        <View style={styles.centerContainer}>
+        <View className="flex-1 justify-center items-center px-10">
           <Ionicons name="cloud-offline-outline" size={48} color="#ef4444" />
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={fetchTodos}>
-            <Text style={styles.retryText}>Retry</Text>
+          <Text className="text-base text-red-500 mt-3 text-center">{error}</Text>
+          <TouchableOpacity className="mt-4 bg-blue-500 px-6 py-2.5 rounded-lg" onPress={fetchTodos}>
+            <Text className="text-white text-base font-semibold">Retry</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -107,143 +106,24 @@ export default function TodoScreen() {
           data={todos}
           renderItem={renderTodo}
           keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 96 }}
           showsVerticalScrollIndicator={false}
         />
       )}
       
-      <View style={styles.inputContainer}>
+      <View className="absolute bottom-0 left-0 right-0 flex-row px-5 pb-8 pt-3 bg-gray-50">
         <TextInput
-          style={styles.input}
+          className="flex-1 bg-white rounded-xl px-4 py-3.5 text-base border border-gray-200 mr-2.5"
           placeholder="Add a new task..."
           value={inputText}
           onChangeText={setInputText}
           onSubmitEditing={addTodo}
           returnKeyType="done"
         />
-        <TouchableOpacity style={styles.addButton} onPress={addTodo}>
+        <TouchableOpacity className="bg-blue-500 w-12 h-12 rounded-full justify-center items-center shadow-lg shadow-blue-500/30" onPress={addTodo}>
           <Ionicons name="add" size={28} color="white" />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9fafb',
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#111827',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
-    marginTop: 4,
-  },
-  listContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 100,
-  },
-  todoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  todoContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  todoText: {
-    fontSize: 16,
-    color: '#374151',
-    marginLeft: 12,
-    flex: 1,
-  },
-  completedText: {
-    textDecorationLine: 'line-through',
-    color: '#9ca3af',
-  },
-  inputContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-    paddingTop: 10,
-    backgroundColor: '#f9fafb',
-  },
-  input: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    marginRight: 10,
-  },
-  addButton: {
-    backgroundColor: '#3b82f6',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#3b82f6',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#6b7280',
-    marginTop: 10,
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#ef4444',
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  retryButton: {
-    marginTop: 16,
-    backgroundColor: '#3b82f6',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

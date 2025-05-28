@@ -1,67 +1,70 @@
-import { StyleSheet, TouchableOpacity, Switch } from 'react-native';
-import { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { Text, View } from '@/components/Themed';
+import { TouchableOpacity, Switch, View, Text } from "react-native";
+import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Settings</Text>
+    <View className="flex-1 bg-gray-50">
+      <View className="px-5 pt-16 pb-5">
+        <Text className="text-3xl font-bold text-gray-900">Settings</Text>
       </View>
-      
-      <View style={styles.section}>
-        <View style={styles.settingItem}>
-          <View style={styles.settingLeft}>
+
+      <View className="bg-white mx-5 mb-5 rounded-xl overflow-hidden">
+        <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
+          <View className="flex-row items-center">
             <Ionicons name="notifications-outline" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>Notifications</Text>
+            <Text className="text-base text-gray-700 ml-3">Notifications</Text>
           </View>
           <Switch
             value={notifications}
             onValueChange={setNotifications}
-            trackColor={{ false: '#d1d5db', true: '#93c5fd' }}
-            thumbColor={notifications ? '#3b82f6' : '#f3f4f6'}
+            trackColor={{ false: "#d1d5db", true: "#93c5fd" }}
+            thumbColor={notifications ? "#3b82f6" : "#f3f4f6"}
           />
         </View>
-        
-        <View style={styles.settingItem}>
-          <View style={styles.settingLeft}>
+
+        <View className="flex-row items-center justify-between p-4">
+          <View className="flex-row items-center">
             <Ionicons name="moon-outline" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>Dark Mode</Text>
+            <Text className="text-base text-gray-700 ml-3">Dark Mode</Text>
           </View>
           <Switch
             value={darkMode}
             onValueChange={setDarkMode}
-            trackColor={{ false: '#d1d5db', true: '#93c5fd' }}
-            thumbColor={darkMode ? '#3b82f6' : '#f3f4f6'}
+            trackColor={{ false: "#d1d5db", true: "#93c5fd" }}
+            thumbColor={darkMode ? "#3b82f6" : "#f3f4f6"}
           />
         </View>
       </View>
-      
-      <View style={styles.section}>
-        <TouchableOpacity style={styles.settingItem}>
-          <View style={styles.settingLeft}>
+
+      <View className="bg-white mx-5 mb-5 rounded-xl overflow-hidden">
+        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-gray-100">
+          <View className="flex-row items-center">
             <Ionicons name="share-outline" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>Share App</Text>
+            <Text className="text-base text-gray-700 ml-3">Share App</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
         </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.settingItem}>
-          <View style={styles.settingLeft}>
+
+        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-gray-100">
+          <View className="flex-row items-center">
             <Ionicons name="star-outline" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>Rate Us</Text>
+            <Text className="text-base text-gray-700 ml-3">Rate Us</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
         </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.settingItem}>
-          <View style={styles.settingLeft}>
-            <Ionicons name="information-circle-outline" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>About</Text>
+
+        <TouchableOpacity className="flex-row items-center justify-between p-4">
+          <View className="flex-row items-center">
+            <Ionicons
+              name="information-circle-outline"
+              size={24}
+              color="#3b82f6"
+            />
+            <Text className="text-base text-gray-700 ml-3">About</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
         </TouchableOpacity>
@@ -69,44 +72,3 @@ export default function SettingsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9fafb',
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#111827',
-  },
-  section: {
-    backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
-  },
-  settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  settingText: {
-    fontSize: 16,
-    color: '#374151',
-    marginLeft: 12,
-  },
-});
