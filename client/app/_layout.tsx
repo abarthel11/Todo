@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
   DefaultTheme,
-  ThemeProvider,
+  ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -13,6 +13,7 @@ import "react-native-reanimated";
 import "../global.css";
 
 import { useColorScheme } from "@/components/useColorScheme";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,13 +53,21 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  return (
+    <ThemeProvider>
+      <RootLayoutNavContent />
+    </ThemeProvider>
+  );
+}
+
+function RootLayoutNavContent() {
+  const { currentTheme } = useTheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <NavigationThemeProvider value={currentTheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
-    </ThemeProvider>
+    </NavigationThemeProvider>
   );
 }
