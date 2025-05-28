@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useColorScheme as useSystemColorScheme } from 'react-native';
+import { useColorScheme as useSystemColorScheme, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useColorScheme } from 'nativewind';
 
 type ThemeOption = 'light' | 'dark' | 'system';
 type Theme = 'light' | 'dark';
@@ -19,6 +20,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const systemTheme = useSystemColorScheme() ?? 'light';
   const [themeOption, setThemeOption] = useState<ThemeOption>('system');
   const [isLoading, setIsLoading] = useState(true);
+  const { setColorScheme } = useColorScheme();
 
   // Load saved theme preference
   useEffect(() => {
@@ -49,6 +51,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const currentTheme: Theme = themeOption === 'system' ? systemTheme : themeOption;
 
+  // Apply the theme to NativeWind
+  useEffect(() => {
+    setColorScheme(currentTheme);
+  }, [currentTheme, setColorScheme]);
+
   if (isLoading) {
     return null; // Or a loading screen
   }
@@ -61,7 +68,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         currentTheme 
       }}
     >
-      {children}
+      <View className={`flex-1 ${currentTheme === 'dark' ? 'dark' : ''}`}>
+        {children}
+      </View>
     </ThemeContext.Provider>
   );
 }

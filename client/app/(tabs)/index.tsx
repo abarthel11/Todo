@@ -2,7 +2,6 @@ import { TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, 
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { API_ENDPOINTS } from '@/config/api';
-import { useTheme } from '@/contexts/ThemeContext';
 
 interface Todo {
   id: string;
@@ -15,7 +14,6 @@ export default function TodoScreen() {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { currentTheme } = useTheme();
 
   useEffect(() => {
     fetchTodos();
@@ -63,19 +61,15 @@ export default function TodoScreen() {
   };
 
   const renderTodo = ({ item }: { item: Todo }) => (
-    <View className={`flex-row items-center justify-between p-4 rounded-xl mb-2 shadow-sm ${
-      currentTheme === 'dark' ? 'bg-gray-800' : 'bg-white'
-    }`}>
+    <View className="flex-row items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-xl mb-2 shadow-sm">
       <TouchableOpacity onPress={() => toggleTodo(item.id)} className="flex-row items-center flex-1">
         <Ionicons 
           name={item.completed ? "checkbox" : "square-outline"} 
           size={24} 
-          color={item.completed ? "#10b981" : currentTheme === 'dark' ? "#9ca3af" : "#6b7280"} 
+          color={item.completed ? "#10b981" : "#6b7280"} 
         />
-        <Text className={`text-base ml-3 flex-1 ${
-          item.completed 
-            ? `line-through ${currentTheme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`
-            : currentTheme === 'dark' ? 'text-gray-100' : 'text-gray-700'
+        <Text className={`text-base ml-3 flex-1 text-gray-700 dark:text-gray-100 ${
+          item.completed ? 'line-through text-gray-400 dark:text-gray-500' : ''
         }`}>
           {item.text}
         </Text>
@@ -88,23 +82,23 @@ export default function TodoScreen() {
 
   return (
     <KeyboardAvoidingView 
-      className={`flex-1 ${currentTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}
+      className="flex-1 bg-gray-50 dark:bg-gray-900"
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View className="px-5 pt-16 pb-5">
-        <Text className={`text-3xl font-bold ${currentTheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>My Tasks</Text>
-        <Text className={`text-base mt-1 ${currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{todos.filter(t => !t.completed).length} active</Text>
+        <Text className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Tasks</Text>
+        <Text className="text-base mt-1 text-gray-500 dark:text-gray-400">{todos.filter(t => !t.completed).length} active</Text>
       </View>
       
       {loading ? (
         <View className="flex-1 justify-center items-center px-10">
           <ActivityIndicator size="large" color="#3b82f6" />
-          <Text className="text-base text-gray-500 mt-3">Loading todos...</Text>
+          <Text className="text-base text-gray-500 dark:text-gray-400 mt-3">Loading todos...</Text>
         </View>
       ) : error ? (
         <View className="flex-1 justify-center items-center px-10">
           <Ionicons name="cloud-offline-outline" size={48} color="#ef4444" />
-          <Text className="text-base text-red-500 mt-3 text-center">{error}</Text>
+          <Text className="text-base text-red-500 dark:text-red-400 mt-3 text-center">{error}</Text>
           <TouchableOpacity className="mt-4 bg-blue-500 px-6 py-2.5 rounded-lg" onPress={fetchTodos}>
             <Text className="text-white text-base font-semibold">Retry</Text>
           </TouchableOpacity>
@@ -119,15 +113,11 @@ export default function TodoScreen() {
         />
       )}
       
-      <View className={`absolute bottom-0 left-0 right-0 flex-row px-5 pb-8 pt-3 ${currentTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <View className="absolute bottom-0 left-0 right-0 flex-row px-5 pb-8 pt-3 bg-gray-50 dark:bg-gray-900">
         <TextInput
-          className={`flex-1 rounded-xl px-4 py-3.5 text-base border mr-2.5 ${
-            currentTheme === 'dark' 
-              ? 'bg-gray-800 border-gray-700 text-gray-100' 
-              : 'bg-white border-gray-200 text-gray-900'
-          }`}
+          className="flex-1 bg-white dark:bg-gray-800 rounded-xl px-4 py-3.5 text-base text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 mr-2.5"
           placeholder="Add a new task..."
-          placeholderTextColor={currentTheme === 'dark' ? '#6b7280' : '#9ca3af'}
+          placeholderTextColor="#9ca3af"
           value={inputText}
           onChangeText={setInputText}
           onSubmitEditing={addTodo}

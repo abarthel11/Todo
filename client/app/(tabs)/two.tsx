@@ -11,16 +11,16 @@ export default function SettingsScreen() {
   const systemTheme = useColorScheme();
 
   return (
-    <View className={`flex-1 ${currentTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       <View className="px-5 pt-16 pb-5">
-        <Text className={`text-3xl font-bold ${currentTheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>Settings</Text>
+        <Text className="text-3xl font-bold text-gray-900 dark:text-gray-100">Settings</Text>
       </View>
 
-      <View className={`mx-5 mb-5 rounded-xl overflow-hidden ${currentTheme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
-        <View className={`flex-row items-center justify-between p-4 border-b ${currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-100'}`}>
+      <View className="bg-white dark:bg-gray-800 mx-5 mb-5 rounded-xl overflow-hidden">
+        <View className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700">
           <View className="flex-row items-center">
             <Ionicons name="notifications-outline" size={24} color="#3b82f6" />
-            <Text className={`text-base ml-3 ${currentTheme === 'dark' ? 'text-gray-100' : 'text-gray-700'}`}>Notifications</Text>
+            <Text className="text-base text-gray-700 dark:text-gray-100 ml-3">Notifications</Text>
           </View>
           <Switch
             value={notifications}
@@ -36,10 +36,10 @@ export default function SettingsScreen() {
         >
           <View className="flex-row items-center">
             <Ionicons name="moon-outline" size={24} color="#3b82f6" />
-            <Text className="text-base text-gray-700 ml-3">Theme</Text>
+            <Text className="text-base text-gray-700 dark:text-gray-100 ml-3">Theme</Text>
           </View>
           <View className="flex-row items-center">
-            <Text className="text-base text-gray-500 mr-2">
+            <Text className="text-base text-gray-500 dark:text-gray-400 mr-2">
               {themeOption === 'system' ? 'System' : themeOption === 'dark' ? 'Dark' : 'Light'}
             </Text>
             <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
@@ -47,19 +47,19 @@ export default function SettingsScreen() {
         </TouchableOpacity>
       </View>
 
-      <View className="bg-white mx-5 mb-5 rounded-xl overflow-hidden">
-        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-gray-100">
+      <View className="bg-white dark:bg-gray-800 mx-5 mb-5 rounded-xl overflow-hidden">
+        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700">
           <View className="flex-row items-center">
             <Ionicons name="share-outline" size={24} color="#3b82f6" />
-            <Text className="text-base text-gray-700 ml-3">Share App</Text>
+            <Text className="text-base text-gray-700 dark:text-gray-100 ml-3">Share App</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
         </TouchableOpacity>
 
-        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-gray-100">
+        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700">
           <View className="flex-row items-center">
             <Ionicons name="star-outline" size={24} color="#3b82f6" />
-            <Text className="text-base text-gray-700 ml-3">Rate Us</Text>
+            <Text className="text-base text-gray-700 dark:text-gray-100 ml-3">Rate Us</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
         </TouchableOpacity>
@@ -71,7 +71,7 @@ export default function SettingsScreen() {
               size={24}
               color="#3b82f6"
             />
-            <Text className="text-base text-gray-700 ml-3">About</Text>
+            <Text className="text-base text-gray-700 dark:text-gray-100 ml-3">About</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
         </TouchableOpacity>
@@ -87,13 +87,13 @@ export default function SettingsScreen() {
           className="flex-1 justify-end bg-black/50"
           onPress={() => setShowThemeModal(false)}
         >
-          <View className="bg-white rounded-t-3xl p-6">
-            <View className="w-12 h-1 bg-gray-300 rounded-full self-center mb-6" />
-            <Text className="text-xl font-bold text-gray-900 mb-4">Choose Theme</Text>
+          <View className="bg-white dark:bg-gray-800 rounded-t-3xl p-6">
+            <View className="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full self-center mb-6" />
+            <Text className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Choose Theme</Text>
             
             <TouchableOpacity
               className={`flex-row items-center justify-between p-4 rounded-xl mb-2 ${
-                themeOption === 'light' ? 'bg-blue-50' : 'bg-gray-50'
+                themeOption === 'light' ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-gray-50 dark:bg-gray-700'
               }`}
               onPress={() => {
                 setThemeOption('light');
